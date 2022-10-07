@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>README for Analysis_Skeleton_Alter</title>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="bear-note-unique-identifier" content="BAB417A5-A71D-4171-BBC9-14D4AF273E63-2261-000000658EBA7614">
+        <meta name="created" content="2022-10-07T16:36:25+0100"/>
+        <meta name="modified" content="2022-10-07T17:41:25+0100"/>
+        <meta name="tags" content="0_current/Analysis/documentation, 0_current, 0_current/Analysis"/>
+        <meta name="last device" content="C-LOSXGXSQ6L4"/>
+    </head>
+    <body>
+        <div class="note-wrapper">
+            <h1 id="README for Analysis_Skeleton_Alter">README for Analysis_Skeleton_Alter</h1>
+<h2 id="Clone the skeleton code">Clone the skeleton code</h2>
+<p><code class='code-inline'>git clone https://github.com/120701/Analysis_Skeleton_Alter.git</code></p>
+<br>
+<h2 id="Structure of the skeleton">Structure of the skeleton</h2>
+<h3 id="Analysis code">Analysis code</h3>
+<p>The code is organised according to the target channel and dataset type.</p>
+<br>
+<p><img src='README%20for%20Analysis_Skeleton_Alter/%E6%88%AA%E5%B1%8F2022-10-07%2011.15.48.png'></p>
+<br>
+<p>For example, the <code class='code-inline'>/MuMu/DATA</code> folder encloses the analysis code targeting at events of the Z <span class='arrow'><svg width="11px" height="10px" viewBox="0 0 11 10" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >    <g id="right-arrow" >        <path d="M1.77635684e-14,5 L9,5" id="rod" stroke="#000000" stroke-width="2" ></path>        <path d="M11,5 L6,0.5 L6,9.5 L11,5 Z" id="point" fill="#000000"></path>    </g></svg></span> mumu channel in the ATLAS (real data) datasets.</p>
+<br>
+<p>Now we focus on  <code class='code-inline'>/MuMu/DATA</code> and figure out what’s in it. Other folders have similar contents so we only need go through this one.</p>
+<br>
+<p><img src='README%20for%20Analysis_Skeleton_Alter/%E6%88%AA%E5%B1%8F2022-10-07%2011.20.37.png'></p>
+<br>
+<p>Things to know:</p>
+<hr>
+<p>Analysis_data_SR.C	|	In order to perform basic analysis you mainly need to alter this.</p>
+<p>Analysis.h			|	Declare the variables you use in the Analysis_data_SR.C, we’ll come to that later.</p>
+<p>samples.txt			|	The list of the available datasets for this specific channel/dataset_type combination.</p>
+<hr>
+<h3 id="parallelRun">parallelRun</h3>
+<p>Running the analysis code in parallel is absolutely essential given the scale of the data you’ll need to process.</p>
+<p>The section of the skeleton that deal with this is the parallelRun:</p>
+<br>
+<p><img src='README%20for%20Analysis_Skeleton_Alter/%E6%88%AA%E5%B1%8F2022-10-07%2011.32.22.png'></p>
+<br>
+<p>Things to know:</p>
+<hr>
+<p>input/				|	It holds the input lists for the channel/data_type combinations, which individually correspond to the analysis code. Hence the content of these files need to be specified according to the corresponding ‘samples.txt’ files.</p>
+<p>root_files/			|	This is where you’ll find your out put files from parallel.</p>
+<p>para.sh				|	The script that initialises parallel runnings. The only script you’ll need to run.</p>
+<hr>
+<h2 id="Basic setup (only once after you get the skeleton)">Basic setup (only once after you get the skeleton)</h2>
+<p>Make the necessary scripts executable.</p>
+<pre><code class='code-multiline'>chmod +x Analysis_Skeleton_Alter/Zee/SR_prepare.sh
+chmod +x Analysis_Skeleton_Alter/MuMu/SR_prepare.sh
+chmod +x Analysis_Skeleton_Alter/parallelRun/para.sh</code></pre>
+<p><br></p>
+<h2 id="SOP of a run (outline)">SOP of a run (outline)</h2>
+<ul><li>decide which channel/dataset_type to run
+</li><li>decide which datasets to input
+</li><li>edit your analysis code and input list accordingly
+</li><li>run para.sh and wait for the result
+</li></ul>
+<br>
+<h2 id="Editing analysis code">Editing analysis code</h2>
+<ul><li>Analysis_X_SR.C
+</li></ul>
+<p>This defines three crucial methods for the ‘CLoop’ class that is in the centre of the skeleton, but you do not need to know all about it.</p>
+<p>The three methods are:</p>
+<p><span class='arrow'><svg width="11px" height="10px" viewBox="0 0 11 10" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >    <g id="right-arrow" >        <path d="M1.77635684e-14,5 L9,5" id="rod" stroke="#000000" stroke-width="2" ></path>        <path d="M11,5 L6,0.5 L6,9.5 L11,5 Z" id="point" fill="#000000"></path>    </g></svg></span> Book: configure the histograms you want to obtain</p>
+<p>Core code:</p>
+<p><code class='code-inline'>h_example = new TH1F(“name_example”,”title_example”, 100, 0, 1);</code></p>
+<p>Specify  a histogram called <mark>name_example</mark>, with the title being <mark>title_example</mark> which has <mark>100</mark> bins ranging from <mark>0</mark> to <mark>1</mark>.</p>
+<p>Accordingly , need to add the pointer <mark>h_example</mark> in Analysis.C (see later).</p>
+<p><span class='arrow'><svg width="11px" height="10px" viewBox="0 0 11 10" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >    <g id="right-arrow" >        <path d="M1.77635684e-14,5 L9,5" id="rod" stroke="#000000" stroke-width="2" ></path>        <path d="M11,5 L6,0.5 L6,9.5 L11,5 Z" id="point" fill="#000000"></path>    </g></svg></span> Fill: fill events in the histograms, selection cuts are implemented during this process</p>
+<p>Core code:</p>
+<p><code class='code-inline'>h_example-&gt;Fill(value, weight);</code></p>
+<p>In the histogram <mark>h_example</mark>, fill in the bin that corresponds to <mark>value</mark>.</p>
+<p><span class='arrow'><svg width="11px" height="10px" viewBox="0 0 11 10" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >    <g id="right-arrow" >        <path d="M1.77635684e-14,5 L9,5" id="rod" stroke="#000000" stroke-width="2" ></path>        <path d="M11,5 L6,0.5 L6,9.5 L11,5 Z" id="point" fill="#000000"></path>    </g></svg></span> Style: write the filled histograms to the output files</p>
+<p>Core code:</p>
+<p><code class='code-inline'>h_example-&gt;Write();</code></p>
+<p>Write the histogram <mark>h_example</mark> to the output root file.</p>
+<ul><li>Analysis.h
+</li></ul>
+<p>The histograms should be declared in this header file.</p>
+<br>
+<h3 id="Editing the datasets">Editing the datasets</h3>
+<p>Get the file names from the corresponding samples.txt and put them in the corresponding input list.</p>
+<br>
+<h3 id="Parallel run">Parallel run</h3>
+<br>
+<p><img src='README%20for%20Analysis_Skeleton_Alter/%E6%88%AA%E5%B1%8F2022-10-07%2012.03.06.png'></p>
+<br>
+<p>If I want to run <mark>Zee</mark> <mark>MC</mark> with <mark>50</mark> threads to get the output file <mark>attempt0.root</mark> :</p>
+<p><code class='code-inline'>./para.sh e MC 50 attempt0.root</code></p>
+<br>
+<h3 id="Tips">Tips</h3>
+<ul><li>For basic coding tutorial: <a href="https://www.runoob.com/">菜鸟教程 - 学的不仅是技术，更是梦想！</a>
+</li><li>For ROOT related document: <a href="https://root.cern/manual/histograms/">Histograms - ROOT</a>
+</li><li>Find the variables that stores the physics information that you need in <code class='code-inline'>Analysis_Skeleton_Alter/channel/data_type/backend/CLoop.h</code>:
+</li></ul>
+<br>
+<p><img src='README%20for%20Analysis_Skeleton_Alter/%E6%88%AA%E5%B1%8F2022-10-07%2016.56.03.png'></p>
+<br>
+<ul><li>For any problem, just drop me a <a href="peng.wang-22@postgrad.manchester.ac.uk">email</a> or come to 6.23 (ゝ∀･)
+</li></ul>
+<br>
+<br>
+<br>
+<p><span class='hashtag'>#0_current/Analysis/documentation</span></p>
+        </div>
+        <script type="text/javascript">
+            (function() {
+
+    var doc_ols = document.getElementsByTagName("ol");
+
+    for ( i=0; i<doc_ols.length; i++) {
+
+        var ol_start = doc_ols[i].getAttribute("start") - 1;
+        doc_ols[i].setAttribute("style", "counter-reset:ol_counter " + ol_start + ";");
+
+    }
+
+})();
+
+        </script>
+        <style>
+            html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td,article,aside,canvas,details,embed,figure,figcaption,footer,header,hgroup,menu,nav,output,ruby,section,summary,time,mark,audio,video{margin:0;padding:0;border:0;font:inherit;font-size:100%;vertical-align:baseline}html{line-height:1}ol,ul{list-style:none}table{border-collapse:collapse;border-spacing:0}caption,th,td{text-align:left;font-weight:normal;vertical-align:middle}q,blockquote{quotes:none}q:before,q:after,blockquote:before,blockquote:after{content:"";content:none}a img{border:none}article,aside,details,figcaption,figure,footer,header,hgroup,main,menu,nav,section,summary{display:block}*{-moz-box-sizing:border-box;-webkit-box-sizing:border-box;box-sizing:border-box}html{font-size:87.5%;line-height:1.57143em}html{font-size:14px;line-height:1.6em;-webkit-text-size-adjust:100%}body{background:#fcfcfc;color:#545454;text-rendering:optimizeLegibility;font-family:"AvenirNext-Regular"}a{color:#de4c4f;text-decoration:none}h1{font-family:"AvenirNext-Medium";color:#333;font-size:1.6em;line-height:1.3em;margin-bottom:.78571em}h2{font-family:"AvenirNext-Medium";color:#333;font-size:1.3em;line-height:1em;margin-bottom:.62857em}h3{font-family:"AvenirNext-Medium";color:#333;font-size:1.15em;line-height:1em;margin-bottom:.47143em}p{margin-bottom:1.57143em;hyphens:auto}hr{height:1px;border:0;background-color:#dedede;margin:-1px auto 1.57143em auto}ul,ol{margin-bottom:.31429em}ul ul,ul ol,ol ul,ol ol{margin-bottom:0px}ol{counter-reset:ol_counter}ol li:before{content:counter(ol_counter) ".";counter-increment:ol_counter;color:#e06e73;text-align:right;display:inline-block;min-width:1em;margin-right:0.5em}b,strong{font-family:"AvenirNext-Bold"}i,em{font-family:"AvenirNext-Italic"}code{font-family:"Menlo-Regular"}.text-overflow-ellipsis{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.sf_code_string,.sf_code_selector,.sf_code_attr-name,.sf_code_char,.sf_code_builtin,.sf_code_inserted{color:#D33905}.sf_code_comment,.sf_code_prolog,.sf_code_doctype,.sf_code_cdata{color:#838383}.sf_code_number,.sf_code_boolean{color:#0E73A2}.sf_code_keyword,.sf_code_atrule,.sf_code_rule,.sf_code_attr-value,.sf_code_function,.sf_code_class-name,.sf_code_class,.sf_code_regex,.sf_code_important,.sf_code_variable,.sf_code_interpolation{color:#0E73A2}.sf_code_property,.sf_code_tag,.sf_code_constant,.sf_code_symbol,.sf_code_deleted{color:#1B00CE}.sf_code_macro,.sf_code_entity,.sf_code_operator,.sf_code_url{color:#920448}.note-wrapper{max-width:46em;margin:0px auto;padding:1.57143em 3.14286em}.note-wrapper.spotlight-preview{overflow-x:hidden}u{text-decoration:none;background-image:linear-gradient(to bottom, rgba(0,0,0,0) 50%,#e06e73 50%);background-repeat:repeat-x;background-size:2px 2px;background-position:0 1.05em}s{color:#878787}p{margin-bottom:0.1em}hr{margin-bottom:0.7em;margin-top:0.7em}ul li{text-indent:-0.35em}ul li:before{content:"•";color:#e06e73;display:inline-block;margin-right:0.3em}ul ul{margin-left:1.25714em}ol li{text-indent:-1.45em}ol ol{margin-left:1.25714em}blockquote{display:block;margin-left:-1em;padding-left:0.8em;border-left:0.2em solid #e06e73}.todo-list ul{margin-left:1.88571em}.todo-list li{text-indent:-1.75em}.todo-list li:before{content:"";display:static;margin-right:0px}.todo-checkbox{text-indent:-1.7em}.todo-checkbox svg{margin-right:0.3em;position:relative;top:0.2em}.todo-checkbox svg #check{display:none}.todo-checkbox.todo-checked #check{display:inline}.todo-checkbox.todo-checked+.todo-text{text-decoration:line-through;color:#878787}.code-inline{display:inline;background:white;border:solid 1px #dedede;padding:0.2em 0.5em;font-size:0.9em}.code-multiline{display:block;background:white;border:solid 1px #dedede;padding:0.7em 1em;font-size:0.9em;overflow-x:auto}.hashtag{display:inline-block;color:white;background:#b8bfc2;padding:0.0em 0.5em;border-radius:1em;text-indent:0}.hashtag a{color:#fff}.address a{color:#545454;background-image:linear-gradient(to bottom, rgba(0,0,0,0) 50%,#0da35e 50%);background-repeat:repeat-x;background-size:2px 2px;background-position:0 1.05em}.address svg{position:relative;top:0.2em;display:inline-block;margin-right:0.2em}.color-preview{display:inline-block;width:1em;height:1em;border:solid 1px rgba(0,0,0,0.3);border-radius:50%;margin-right:0.1em;position:relative;top:0.2em;white-space:nowrap}.color-code{margin-right:0.2em;font-family:"Menlo-Regular";font-size:0.9em}.color-hash{opacity:0.4}.ordered-list-number{color:#e06e73;text-align:right;display:inline-block;min-width:1em}.arrow svg{position:relative;top:0.08em;display:inline-block;margin-right:0.15em;margin-left:0.15em}.arrow svg #rod{stroke:#545454}.arrow svg #point{fill:#545454}mark{color:inherit;display:inline;padding:0.2em 0.5em;background-color:#fcffc0}img{max-width:100%;height:auto}
+
+        </style>
+    </body>
+</html>
